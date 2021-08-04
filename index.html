@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+        integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
+        integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+        crossorigin="anonymous"></script>
+    <title>Cligest - Simulador de Elegibilidades Clínicas</title>
+</head>
+
+<body>
+    <div class="container" id="container">
+        <h2 class="text-center mt-4 mb-4">Simulador de Elegibilidades Clínicas</h2>
+        <div class="row mt-5 mb-5" id="no-principal">
+            <div class="col col-sm-2">&nbsp;</div>
+            <div class="col col-sm-8">
+                <div class="input-group mb-3">
+                    <input type="hidden" name="idArtigo" id="idArtigo">
+                    <input type="hidden" name="valorArtigo" id="valorArtigo">
+                    <input type="text" name="consulta" id="consulta" class="form-control form-control-lg"
+                        placeholder="Digite o Artigo aqui..." onkeyup="javascript:carregaDados(this.value)">
+                    <div class="input-group-append">
+                        <button class="btn btn-success" onclick="javascript:adicionaArtigo()">Adicionar</button>
+                    </div>
+                </div>
+                <span id="resultado"></span>
+            </div>
+        </div>
+    </div>
+   
+    <div class="container table">
+        <form action="resumo.php" method="post" id="formSbumit">
+            <input type="submit" value="Simular" class="btn btn-primary">
+        </form>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>ARTIGO</th>
+                    <th>VALOR S/ IVA</th>
+                    <th>VALOR C/ IVA</th>
+                    <th>REMOVER</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+
+            </tbody>
+        </table>
+        <form action="" method="post">
+            <input type="submit" value="Simular" class="btn btn-primary">
+        </form>
+    </div>
+
+    <script>
+        var tableRow
+        var indice
+        /* function copiaNo(){
+            console.log('entrou')
+            var noPrincipal = document.getElementById('no-principal')
+            var copia = noPrincipal.cloneNode(true)
+            document.getElementById('container').appendChild(copia)
+        } */
+        function adicionaArtigo(){
+            tableRow = '<tr>'
+            tableRow += '<td><input type="text" name="idArtigo[]" id="idArtigo" class="form-control" value="REPLACE_VALUE" readonly></td>'
+            tableRow += '<td><input type="text" name="artigo[]" id="artigo" class="form-control" value="REPLACE_VALUE" readonly></td>'
+            tableRow += '<td><input type="text" name="valorArtigo[]" id="valorArtigo" class="form-control" value="REPLACE_VALUE" readonly></td>'
+            tableRow += '<td><input type="text" name="REPLACE_NAME[]" id="REPLACE_ID" class="form-control" value="REPLACE_VALUE" readonly></td>'
+            tableRow += '<td><button class="btn btn-danger" name="remover[]" >Remover</button></td>'
+            tableRow +='</tr>'
+            
+            var consulta = document.getElementById('consulta')
+            var tableBody = document.getElementById('tableBody')
+            console.log(consulta)
+            if(consulta.value ==''){
+                alert('Você pecisa fazer uma consulta antes de adicionar uma artigo')
+            }else{
+                var form_data = new FormData()
+                form_data.append('consulta', consulta.value)
+
+                var ajaxRequest = new XMLHttpRequest()
+                ajaxRequest.open('POST', 'findByArtigo.php')
+                ajaxRequest.send(form_data)
+                ajaxRequest.onreadystatechange = function () {
+                    if (ajaxRequest.readyState == 4 && ajaxRequest.status == 200) {
+                        console.log('Consulta aqi ' + ajaxRequest.responseText)
+                        var resposta = JSON.parse(ajaxRequest.responseText)
+                        console.log('Resposta ' + resposta)
+                        console.log('Resposta Size ' + resposta.length)
+                        console.log('Consulta ' + consulta.value)
+                        
+                        if (resposta.length > 0) {
+                            console.log('i - ' + JSON.stringify(resposta))
+                            var elementType = 'tr'
+                            var tr = criaElemento(elementType)
+                            adicionaElementos(tr,"idArtigo[]", resposta[0].IdActo)
+                            adicionaElementos(tr,"artigo[]", resposta[0].Acto)
+                            adicionaElementos(tr,"valorArtigo[]", resposta[0].IVA )
+                            adicionaElementos(tr,"REPLACE_NAME[]","")
+                            //adicionaElementos(tr,"","")
+                            tableBody.appendChild(tr)
+                            document.getElementById('consulta').value = ''
+                            /* tableBody.innerHTML += tableRow
+                            document.getElementsByName('idArtigo')[indice].value = resposta[0].IdActo
+                            document.getElementsByName('artigo')[indice].value = resposta[0].Acto
+                            document.getElementsByName('valorArtigo')[indice].value = resposta[0].PU  */
+                            indice++
+                        } else {
+                            alert("Desculpa. Houve algum problema")
+                        }
+                    }
+                }
+                
+            }    
+        }
+
+        function capturaTexto(event){
+            var str = event.textContent
+            document.getElementsByName('consulta')[0].value = str
+            document.getElementById('resultado').innerHTML = ''
+        }
+        function carregaDados(consulta) {
+            if (consulta.length > 2) {
+                var form_data = new FormData()
+                form_data.append('consulta', consulta)
+
+                var ajaxRequest = new XMLHttpRequest()
+                ajaxRequest.open('POST', 'consultaController.php')
+                ajaxRequest.send(form_data)
+                ajaxRequest.onreadystatechange = function () {
+                    if (ajaxRequest.readyState == 4 && ajaxRequest.status == 200) {
+                        var resposta = JSON.parse(ajaxRequest.responseText)
+                        //console.log('Consulta ' + resposta.length)
+                        var html = '<div class="list-group">'
+                        if (resposta.length > 0) {
+                            for (var i = 0; i < resposta.length; i++) {
+                                //console.log('Consulta ' + resposta[i].IdActo)
+                                html += '<a href="#" class="list-group-item list-group-item-action" onclick="capturaTexto(this)">' + resposta[i].Acto + '</a>'
+                            }
+                        } else {
+                            html += '<a href="#" class="list-group-item list-group-item-action disabled">Sem infomação encontrada</a>'
+                        }
+                        html += '</div>'
+
+                        document.getElementById('resultado').innerHTML = html
+                    }
+                }
+
+            } else {
+                document.getElementById('resultado').innerHTML = ''
+            }
+        }
+
+        function criaElemento(elementType, attributes = [{}]){
+            var tableBody = document.getElementById('tableBody')
+            var element = document.createElement(elementType)
+            
+            if (attributes === [{}]) return element
+
+            for(let i =0; i<attributes.length; i++){
+                element.setAttribute(attributes[i].name, attributes[i].value)
+            }
+            return element
+        }
+
+        function adicionaElementos(parent, nameElement, valueElement){
+            var tableBody = document.getElementById('tableBody')
+            
+            var elementType = 'td'
+            var td = criaElemento(elementType)
+            var elementType = 'input'
+            
+            var attributes = [
+                {
+                    name:'type',
+                    value:'text'
+                },
+                {
+                    name:'name',
+                    value:nameElement
+                },
+                {
+                    name:'class',
+                    value:'form-control'
+                },
+                {
+                    name:'value',
+                    value: valueElement 
+                },{
+                    name:'readonly',
+                    value:'true'
+                },{
+                    name:'form',
+                    value:'formSbumit'
+                }
+            ]
+            var input = criaElemento(elementType, attributes)
+            td.appendChild(input)
+            parent.appendChild(td)                
+
+        }
+
+        /* 
+
+        function removeRow(){
+            for (let j = 0; j < document.getElementsByName('remover').length; j++) {
+                document.getElementsByName('remover')[j].addEventListener('click', _ => {
+                event.preventDefault()
+                console.log('Clicaste no botao ' + (j + 1))
+            })
+        }
+        } */
+
+        
+    </script>
+</body>
+
+</html>

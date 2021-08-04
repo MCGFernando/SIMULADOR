@@ -1,0 +1,121 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <form>
+        <select id="selectclass">
+            <option value="CONSUMIVEIS">CONSUMIVEIS</option>
+            <option value="FÁRMACOS">FÁRMACOS</option>
+            <option value="VACINAS">VACINAS</option>
+        </select>
+    </form>
+
+    <hr>
+    <table id="maintable">
+        <tr>
+            <th>Company</th>
+            <th>Contact</th>
+            <th>Country</th>
+            <th>ACTION</th>
+        </tr>
+        <tr>
+            <td>Alfreds Futterkiste</td>
+            <td>Maria Anders</td>
+            <td>Germany</td>
+            <td>
+                <button class="btn" title="Adicionar Artigo a lista">>></button>
+            </td>
+        </tr>
+        <tr>
+            <td>Centro comercial Moctezuma</td>
+            <td>Francisco Chang</td>
+            <td>Mexico</td>
+            <td>
+                <button class="btn" title="Adicionar Artigo a lista">>></button>
+            </td>
+        </tr>
+        <tr>
+            <td>Ernst Handel</td>
+            <td>Roland Mendel</td>
+            <td>Austria</td>
+            <td>
+                <button class="btn" title="Adicionar Artigo a lista">>></button>
+            </td>
+        </tr>
+        <tr>
+            <td>Island Trading</td>
+            <td>Helen Bennett</td>
+            <td>UK</td>
+            <td>
+                <button class="btn" title="Adicionar Artigo a lista">>></button>
+            </td>
+        </tr>
+        <tr>
+            <td>Laughing Bacchus Winecellars</td>
+            <td>Yoshi Tannamuri</td>
+            <td>Canada</td>
+            <td>
+                <button class="btn" title="Adicionar Artigo a lista">>></button>
+            </td>
+        </tr>
+        <tr>
+            <td>Magazzini Alimentari Riuniti</td>
+            <td>Giovanni Rovelli</td>
+            <td>Italy</td>
+            <td>
+                <button class="btn" title="Adicionar Artigo a lista">>></button>
+            </td>
+        </tr>
+
+    </table>
+    <hr>
+    <button type="submit">Simular</button>
+    <div class="card-table">
+        <table id="tableconsumibeis">
+            <caption>CONSUMIVEIS</caption>
+            <tr>
+                <th>Company</th>
+                <th>Contact</th>
+                <th>Country</th>
+                <th>Accao</th>
+            </tr>
+            
+        </table>
+    </div>
+    <div class="card-table">
+        <table id="tablefarmacos">
+            <caption>FÁRMACOS</caption>
+            <tr>
+                <th>Company</th>
+                <th>Contact</th>
+                <th>Country</th>
+                <th>Accao</th>
+            </tr>
+            
+        </table>
+    </div>
+    <div class="card-table">
+        <table id="tablevacinas">
+            <caption>VACINAS</caption>
+            <tr>
+                <th>Company</th>
+                <th>Contact</th>
+                <th>Country</th>
+                <th>Accao</th>
+            </tr>
+            
+        </table>
+    </div>
+    <button type="submit">Simular</button>
+    <script src="script.js"></script>
+    <script src="controller.js"></script>
+</body>
+
+</html>
