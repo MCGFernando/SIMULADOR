@@ -20,8 +20,6 @@
             <div class="col col-sm-2">&nbsp;</div>
             <div class="col col-sm-8">
                 <div class="input-group mb-3">
-                    <input type="hidden" name="idArtigo" id="idArtigo">
-                    <input type="hidden" name="valorArtigo" id="valorArtigo">
                     <input type="text" name="consulta" id="consulta" class="form-control form-control-lg"
                         placeholder="Digite o Artigo aqui..." onkeyup="javascript:carregaDados(this.value)">
                     <div class="input-group-append">
@@ -33,15 +31,17 @@
         </div>
     </div>
    
-    <div class="container table">
+    <div class="container table" >
         <form action="resumo.php" method="post" id="formSbumit">
-            <input type="submit" value="Simular" class="btn btn-primary">
+            <input type="submit" id="btnSubmit" value="Simular" class="btn btn-primary" disabled> 
         </form>
         <table class="table">
             <thead>
                 <tr>
                     <th>ID</th>
                     <th>ARTIGO</th>
+                    <th>QNT</th>
+                    <th>CODE IVA</th>
                     <th>VALOR S/ IVA</th>
                     <th>VALOR C/ IVA</th>
                     <th>REMOVER</th>
@@ -52,7 +52,7 @@
             </tbody>
         </table>
         <form action="" method="post">
-            <input type="submit" value="Simular" class="btn btn-primary">
+            <input type="submit" value="Simular" class="btn btn-primary" disabled>
         </form>
     </div>
 
@@ -66,13 +66,13 @@
             document.getElementById('container').appendChild(copia)
         } */
         function adicionaArtigo(){
-            tableRow = '<tr>'
+            /* tableRow = '<tr>'
             tableRow += '<td><input type="text" name="idArtigo[]" id="idArtigo" class="form-control" value="REPLACE_VALUE" readonly></td>'
             tableRow += '<td><input type="text" name="artigo[]" id="artigo" class="form-control" value="REPLACE_VALUE" readonly></td>'
             tableRow += '<td><input type="text" name="valorArtigo[]" id="valorArtigo" class="form-control" value="REPLACE_VALUE" readonly></td>'
             tableRow += '<td><input type="text" name="REPLACE_NAME[]" id="REPLACE_ID" class="form-control" value="REPLACE_VALUE" readonly></td>'
             tableRow += '<td><button class="btn btn-danger" name="remover[]" >Remover</button></td>'
-            tableRow +='</tr>'
+            tableRow +='</tr>' */
             
             var consulta = document.getElementById('consulta')
             var tableBody = document.getElementById('tableBody')
@@ -80,6 +80,7 @@
             if(consulta.value ==''){
                 alert('Você pecisa fazer uma consulta antes de adicionar uma artigo')
             }else{
+                document.getElementById('btnSubmit').disabled = false
                 var form_data = new FormData()
                 form_data.append('consulta', consulta.value)
 
@@ -98,10 +99,13 @@
                             console.log('i - ' + JSON.stringify(resposta))
                             var elementType = 'tr'
                             var tr = criaElemento(elementType)
-                            adicionaElementos(tr,"idArtigo[]", resposta[0].IdActo)
-                            adicionaElementos(tr,"artigo[]", resposta[0].Acto)
-                            adicionaElementos(tr,"valorArtigo[]", resposta[0].IVA )
-                            adicionaElementos(tr,"REPLACE_NAME[]","")
+                            adicionaElementos(tr, "text", "", "","idArtigo[]","form-control", resposta[0].IdActo, "true")
+                            adicionaElementos(tr, "text", "", "","artigo[]","form-control" , resposta[0].Acto, "true")
+                            adicionaElementos(tr, "number", 1, 1, "qnt[]","form-control", 1, "false")
+                            adicionaElementos(tr, "text", "", "","iva[]","form-control", resposta[0].IVA , "true")
+                            adicionaElementos(tr, "text", "", "","precoArtigo[]","form-control", resposta[0].valorArtigo , "true")
+                            adicionaElementos(tr, "text", "", "","valorComArtigo[]","form-control", resposta[0].valorComArtigo, "true")
+                            adicionaElementos(tr, "button", "", "","remover[]","btn btn-danger","Remover", "true")
                             //adicionaElementos(tr,"","")
                             tableBody.appendChild(tr)
                             document.getElementById('consulta').value = ''
@@ -124,6 +128,7 @@
             document.getElementsByName('consulta')[0].value = str
             document.getElementById('resultado').innerHTML = ''
         }
+
         function carregaDados(consulta) {
             if (consulta.length > 2) {
                 var form_data = new FormData()
@@ -139,7 +144,7 @@
                         var html = '<div class="list-group">'
                         if (resposta.length > 0) {
                             for (var i = 0; i < resposta.length; i++) {
-                                //console.log('Consulta ' + resposta[i].IdActo)
+                                console.log('Consulta ' + resposta[i].Acto)
                                 html += '<a href="#" class="list-group-item list-group-item-action" onclick="capturaTexto(this)">' + resposta[i].Acto + '</a>'
                             }
                         } else {
@@ -168,7 +173,7 @@
             return element
         }
 
-        function adicionaElementos(parent, nameElement, valueElement){
+        function adicionaElementos(parent, type, min, step, nameElement, classElement, valueElement, read){
             var tableBody = document.getElementById('tableBody')
             
             var elementType = 'td'
@@ -178,7 +183,13 @@
             var attributes = [
                 {
                     name:'type',
-                    value:'text'
+                    value: type
+                },{
+                    name:'min',
+                    value:min
+                },{
+                    name:'step',
+                    value:step
                 },
                 {
                     name:'name',
@@ -186,36 +197,42 @@
                 },
                 {
                     name:'class',
-                    value:'form-control'
+                    value:classElement
                 },
                 {
                     name:'value',
                     value: valueElement 
                 },{
                     name:'readonly',
-                    value:'true'
+                    value:read
                 },{
                     name:'form',
                     value:'formSbumit'
                 }
             ]
+            if(type=="number" || type=="button"){
+                attributes.splice(6,1)
+            }
+            
             var input = criaElemento(elementType, attributes)
             td.appendChild(input)
             parent.appendChild(td)                
 
         }
 
-        /* 
+       
 
-        function removeRow(){
-            for (let j = 0; j < document.getElementsByName('remover').length; j++) {
-                document.getElementsByName('remover')[j].addEventListener('click', _ => {
-                event.preventDefault()
-                console.log('Clicaste no botao ' + (j + 1))
-            })
-        }
-        } */
-
+        //function removeRow(){
+            console.log('Estou a Funcionar')
+            var btn = document.getElementsByName('remover[]')
+            for (let j = 0; j < btn.length; j++) {
+                btn[j].addEventListener('click', function(){
+                    console.log('Clicou no botao ' + j)
+                })
+                
+            }
+        //}  
+        //removeRow()
         
     </script>
 </body>

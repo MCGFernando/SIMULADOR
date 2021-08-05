@@ -16,7 +16,10 @@ $fes = dao::pesquisaFichaEpisodio();
 $len = count($_POST['artigo']);
 $id = $_POST['idArtigo'];
 $artigo = $_POST['artigo'];
-$iva = $_POST['valorArtigo'];
+$qnt = $_POST['qnt'];
+$iva = $_POST['iva'];
+$precoArtigo = $_POST['precoArtigo'];
+$valorComArtigo = $_POST['valorComArtigo'];
 $totalSemIva = 0;
 $totalComIva = 0;
 $dbTimeStamp = Time();
@@ -37,62 +40,80 @@ $dbTimeStamp = Time();
 <body>
     <div class="container">
         <h2 class="text-center mt-4 mb-4">Simulador de Elegibilidades Clínicas</h2>
-        <form action="">
+        <form action="insercaoController.php" method="post">
             <table class="table">
                 <thead>
                     <tr>
                         <th>ID</th>
                         <th>ARTIGO</th>
-                        <th>VALOR S/ IVA</th>
-                        <th>VALOR C/ IVA</th>
+                        <th>QNT</th>
+                        <th>CODE IVA</th>
+                        <th>PREÇO ARTIGO</th>
+                        <th>VALOR ARTIGO</th>-->
                     </tr>
                 </thead>
                 <tbody id="tableBody">
                     <?php
                     for ($i = 0; $i < $len; $i++) {
-                        $totalSemIva += $iva[$i];
-                        $totalComIva += $iva[$i];
+                        if ($iva[$i]==14){
+                            $totalComIva += $precoArtigo[$i]*$qnt[$i];
+                        }else{
+                            $totalSemIva += $precoArtigo[$i]*$qnt[$i];
+                        }
                     ?>
                         <tr>
                             <td><input type="text" name="idArtigo[]" id="idArtigo" class="form-control" value="<?php echo $id[$i] ?>" readonly></td>
                             <td><input type="text" name="artigo[]" id="artigo" class="form-control" value="<?php echo $artigo[$i] ?>" readonly></td>
-                            <td><input type="text" name="valorArtigo[]" id="valorArtigo" class="form-control" value="<?php echo $iva[$i] ?>" readonly></td>
-                            <td><input type="text" name="REPLACE_NAME[]" id="REPLACE_ID" class="form-control" value="REPLACE_VALUE" readonly></td>
+                            <td><input type="number" name="qnt[]" id="qnt" class="form-control" value="<?php echo $qnt[$i] ?>" ></td>
+                            <input type="hidden" name="iva[]" id="iva" value="<?php echo $iva[$i] ?>">
+                            <td><input type="text" name="" id="" class="form-control" value="<?php echo ($iva[$i]==14?"Artigo com IVA":"Artigo sem IVA") ?>" readonly></td>
+                            <td><input type="text" name="precoArtigo[]" id="precoArtigo" class="form-control" value="<?php echo $precoArtigo[$i] ?>" readonly></td>
+                            <td><input type="text" name="valorArtigo[]" id="valorArtigo" class="form-control" value="<?php echo $precoArtigo[$i] * $qnt[$i] ?>" readonly></td>
                         </tr>
                     <?php } ?>
                 </tbody>
             </table>
             <div class="form-group">
-                <label for="numProcesso">Ficha de Episódio:</label>
+                <label for="numProcesso">1 - Passo) Selecione a Ficha de Episódio:</label>
                 <select class="form-control" name="numProcesso" id="numProcesso" onchange="getEntidade()" require>
-                    <option value="0">Selcione a Ficha de Episódio</option>
+                    <option value="0" disabled selected>Selcione a Ficha de Episódio</option>
                     <?php foreach ($fes as $row) { ?>
                         <option value="<?php echo $row['Nº de Processo'] ?>" data-entidade="<?php echo $row['ID entidade'] ?>"><?php echo $row['Nº de Processo'] ?></option>
                     <?php } ?>
                 </select>
             </div>
+
+            <!-- <div class="form-group">
+                <input type="text" name="idArtigo[]" id="idArtigo" class="form-control" value="<?php echo $id[$i] ?>" readonly>
+            </div> -->
+
             <div style="display: none;" id="startHidden">
                 <div class="form-group">
                     <label for="tipoArtigo">Tipo de Artigo</label>
                     <select class="form-control" name="tipoArtigo" id="tipoArtigo" require>
-                        <option value="0">Selcione o Tipo de Artigo</option>
-                        <option value="" >CONSUMIVEIS</option>
-                        <option value="" >FARMACOS</option>
-                        <option value="" >FARMACIA EXTERNA</option>
-                        <option value="" >VACINAS</option>
+                        <option value="0" disabled selected>Selcione o Tipo de Artigo</option>
+                        <option value="CONSUMIVEIS" >CONSUMIVEIS</option>
+                        <option value="FARMACOS" >FARMACOS</option>
+                        <option value="FARMACIA EXTERNA" >FARMACIA EXTERNA</option>
+                        <option value="VACINAS" >VACINAS</option>
                     </select>
                 </div>
             </div>
             <hr>
-            Total Com Iva.: <input type="text" name="" id="" class="form-control" value="<?php echo $totalSemIva ?>" readonly>
-            Total Sem Iva.: <input type="text" name="" id="" class="form-control" value="<?php echo $totalComIva ?>" readonly>
+            
+
+            Total de Artigos Sem Iva.: <input type="text" name="semIVA" id="semIVA" class="form-control" value="<?php echo $totalSemIva ?>" readonly>
+            Total de Artigos Com Iva.: <input type="text" name="comIVA" id="comIVA" class="form-control" value="<?php echo $totalComIva ?>" readonly>
+            <!--<br>
+            Total da Elegibilidade.: <input type="text" name="" id="totalelegibilidade" class="form-control" value="<?php //echo ($totalComIva + $totalSemIva) ?>" readonly>-->
             <hr>
-            <input type="hidden" name="" value="<?php echo  $dbTimeStamp?>">
-            <input type="submit" name="" id="btnSubmit" class="btn btn-primary" value="Finalizar Simulação" disabled>
-            <button class="btn btn-danger">Cancelar Simulação</button>
+            <input type="hidden" name="dbTimeStamp" value="<?php echo  $dbTimeStamp?>">
+            <input type="submit" name="" id="btnSubmit" class="btn btn-primary" value="Simular" disabled>
+            <button class="btn btn-danger" name="" id="recalcular">Recalcular Simulação</button>
         </form>
     </div>
     <script>
+        var recalcular = document.getElementById('recalcular')
         function getEntidade() {
             console.log('Clicou')
             var numProcesso = document.getElementById('numProcesso')
@@ -108,6 +129,35 @@ $dbTimeStamp = Time();
                 btnSubmit.disabled =  true
             }
         }
+        recalcular.addEventListener('click', function(){
+            event.preventDefault()
+            console.log('Recalc')
+            var totalelegibilidade = document.getElementById('totalelegibilidade');
+            var qnt = document.getElementsByName('qnt[]');
+            var precoArtigo = document.getElementsByName('precoArtigo[]');
+            var iva = document.getElementsByName('iva[]');
+            var comIVA = document.getElementById('comIVA');
+            var semIVA = document.getElementById('semIVA');
+            var len = precoArtigo.length
+            var totalComIva = 0
+            var totalSemIva = 0
+
+            for(let i=0; i<len; i++){
+                if(iva[i].value=='Artigo com IVA'){
+                    totalComIva += qnt[i].value*precoArtigo[i].value
+                }else{
+                    totalSemIva += qnt[i].value*precoArtigo[i].value
+                }
+
+                console.log('Qnt: ' + qnt[i].value)
+                console.log('Valor: ' + precoArtigo[i].value)
+            }
+            comIVA.value = totalComIva
+            semIVA.value = totalSemIva
+            totalelegibilidade.value = (totalComIva+totalSemIva)
+            console.log('Com IVA: ' + totalComIva)
+            console.log('Sem IVA: ' + totalSemIva)
+        })
     </script>
 </body>
 
