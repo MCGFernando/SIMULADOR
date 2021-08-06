@@ -49,7 +49,7 @@ $dbTimeStamp = Time();
                         <th>QNT</th>
                         <th>CODE IVA</th>
                         <th>PREÇO ARTIGO</th>
-                        <th>VALOR ARTIGO</th>-->
+                        <th>VALOR ARTIGO</th>
                     </tr>
                 </thead>
                 <tbody id="tableBody">

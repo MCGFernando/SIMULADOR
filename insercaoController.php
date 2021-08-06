@@ -20,7 +20,7 @@ try {
     $estadoCRUD = false;
 
     $conta = dao::pesquisaProdutoRequestPorTimestamp($dbTimeStamp);
-    echo $conta;
+    //echo $conta;
     if ($conta == 0) {
         for ($i = 0; $i < $len; $i++) {
             $codeiva = determinaProcCode($tipoArtigo, $iva[$i]);
@@ -32,7 +32,7 @@ try {
         }
     } else {
         $estadoCRUD = true;
-        echo 'Registo ja cadastrado';
+        //echo 'Registo ja cadastrado';
     }
 } catch (Exception $ex) {
     echo $ex->getMessage();

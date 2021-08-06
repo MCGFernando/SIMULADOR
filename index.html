@@ -35,7 +35,7 @@
         <form action="resumo.php" method="post" id="formSbumit">
             <input type="submit" id="btnSubmit" value="Simular" class="btn btn-primary" disabled> 
         </form>
-        <table class="table">
+        <table class="table" id="table">
             <thead>
                 <tr>
                     <th>ID</th>
@@ -59,6 +59,7 @@
     <script>
         var tableRow
         var indice
+        var btnIndex = 0
         /* function copiaNo(){
             console.log('entrou')
             var noPrincipal = document.getElementById('no-principal')
@@ -213,27 +214,51 @@
             if(type=="number" || type=="button"){
                 attributes.splice(6,1)
             }
+
+            if(type=="button"){
+                btnIndex++
+                attributes.push({
+                    name:'onclick',
+                    value:"removerRow(this)"
+                })
+            }
             
             var input = criaElemento(elementType, attributes)
             td.appendChild(input)
             parent.appendChild(td)                
 
         }
-
-       
-
-        //function removeRow(){
-            console.log('Estou a Funcionar')
-            var btn = document.getElementsByName('remover[]')
-            for (let j = 0; j < btn.length; j++) {
-                btn[j].addEventListener('click', function(){
-                    console.log('Clicou no botao ' + j)
-                })
-                
+       var table = document.getElementById('table')
+        var indiceTable = table.rows.length
+        for(let i = 0; i<table.rows.length; i++){
+            
+            table.rows[i].onclick = function(){
+                indiceTable = this.rowIndex
+                console.log('Indice table ' + this.rowIndex)
             }
-        //}  
-        //removeRow()
+        }
         
+        function removerRow(indiceBotao){
+            var i = indiceBotao.parentNode.parentNode.rowIndex;
+            document.getElementById("table").deleteRow(i);
+
+
+           /*  indiceTable = table.rows.length
+            var btn = document.getElementsByName(['remover[]'])
+            console.log('clicou no botao ' + indiceBotao)
+            console.log('linha ' + indiceTable)
+            table.deleteRow(indiceBotao) */
+            if(table.rows.length==1){
+                document.getElementById('btnSubmit').disabled = true
+            }
+        }
+        /* var btn = document.getElementsByName('remover[]')
+        console.log('botao len ' + btn.length)
+        for (let i =0; i<btn.length; i++){
+            btn[i].onclick = function(){
+                console.log('Clicou no botao ' + i)
+            }
+        } */
     </script>
 </body>
 
