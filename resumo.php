@@ -132,7 +132,7 @@ $dbTimeStamp = Time();
         recalcular.addEventListener('click', function(){
             event.preventDefault()
             console.log('Recalc')
-            var totalelegibilidade = document.getElementById('totalelegibilidade');
+            //var totalelegibilidade = document.getElementById('totalelegibilidade');
             var qnt = document.getElementsByName('qnt[]');
             var precoArtigo = document.getElementsByName('precoArtigo[]');
             var iva = document.getElementsByName('iva[]');
@@ -143,10 +143,10 @@ $dbTimeStamp = Time();
             var totalSemIva = 0
 
             for(let i=0; i<len; i++){
-                if(iva[i].value=='Artigo com IVA'){
-                    totalComIva += qnt[i].value*precoArtigo[i].value
+                if(iva[i].value==14){
+                    totalComIva += qnt[i].value * precoArtigo[i].value
                 }else{
-                    totalSemIva += qnt[i].value*precoArtigo[i].value
+                    totalSemIva += qnt[i].value * precoArtigo[i].value
                 }
 
                 console.log('Qnt: ' + qnt[i].value)

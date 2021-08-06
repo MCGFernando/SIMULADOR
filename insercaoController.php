@@ -68,21 +68,53 @@ function determinaProcCode($tipo, $ivaCode)
 
 <body>
     <div class="container">
-        <?php if ($estadoCRUD) { ?>
-            <h4>Para finalizar, crie no <a href="https://cligest-ar-quality.azurewebsites.net/" target="blank">WS</a> uma Elegibilidade com as seguintes artigos:</h4><br><br>
-            <label for=""><?php echo $tipoArtigo ?> Sem Iva.: </label><input type="text" name="" id="semIVA" class="form-control" value="<?php echo $semIVA ?>" readonly>
-            <label for=""><?php echo $tipoArtigo ?> Com Iva.: </label><input type="text" name="" id="comIVA" class="form-control" value="<?php echo $comIVA ?>" readonly>
-            <input type="hidden" name="consulta" id="consulta" value="<?php echo $dbTimeStamp ?>" readonly>
-            <br><br>
-            <h4>Após criar a Elegibilidade, volte para esta página e pressione o Botão Finalizar </h4>
-            <hr>
-            <button class="btn btn-success" onclick="javascript:mostraResumoFinal()">Finalizar</button>
-            <div style="display: none;" id="startHidden">
+        <?php if ($estadoCRUD) { //$estadoCRUD 
+        ?>
+            <div id="startShowing">
+                <h4>Para finalizar, crie no <a href="https://cligest-ar-quality.azurewebsites.net/" target="blank" class="badge badge-primary">WS</a> uma Elegibilidade com as seguintes artigos:</h4><br><br>
+                <label for="">Ficha de Episódio.: </label><input type="text" name="" id="" class="form-control" value="<?php echo $processo ?>" readonly>
+                <label for=""><?php echo $tipoArtigo ?> Sem Iva.: </label><input type="text" name="" id="semIVA" class="form-control" value="<?php echo $semIVA ?>" readonly>
+                <label for=""><?php echo $tipoArtigo ?> Com Iva.: </label><input type="text" name="" id="comIVA" class="form-control" value="<?php echo $comIVA ?>" readonly>
+                <input type="hidden" name="consulta" id="consulta" value="<?php echo $dbTimeStamp ?>" readonly>
+                <br><br>
+                <h4>Após criar a Elegibilidade, volte para esta página e pressione o Botão Finalizar </h4>
+                <hr>
+                <button class="btn btn-success" onclick="javascript:mostraResumoFinal()">Finalizar</button>
+            </div>
+
+
+            <div style="display: none;" id="startHidden" class="container">
                 <h2>Resumo da Simulação</h2>
+                <div class="card-body">
+                    <label for="">Elegibilidade</label>
+                    <input type="text" name="" id="elegibilidade" class="form-control" value="" readonly>
+                    <label for="">Ficha de Episódio</label>
+                    <input type="text" name="" id="fe" class="form-control" value="" readonly>
+                    <br>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Descrição</th>
+                                <th>% Co-Pago</th>
+                                <th>IVA (14%)</th>
+                                <th>QNT</th>
+                                <th>Valor</th>
+                                <th>Sub-Total</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody">
+
+                        </tbody>
+                    </table>
+
+                    <hr>
+                    <a href="index.html" class="btn btn-primary">Fazer Nova Simulação</a>
+                </div>
             </div>
 
         <?php } else { ?>
             <h2>Por alguma razão não foi possível concluir a simulação. Por favor chame o Administrador</h2>
+            <a href="index.html" class="btn btn-primary">Voltar a página inicial</a>
         <?php } ?>
     </div>
 
@@ -97,24 +129,144 @@ function determinaProcCode($tipo, $ivaCode)
             ajaxRequest.send(form_data)
             ajaxRequest.onreadystatechange = function() {
                 if (ajaxRequest.readyState == 4 && ajaxRequest.status == 200) {
-                    console.log('Consulta aqi ' + ajaxRequest.responseText)
+                    //console.log('Consulta aqi ' + ajaxRequest.responseText)
                     var resposta = JSON.parse(ajaxRequest.responseText)
                     console.log('Resposta ' + resposta)
                     console.log('Resposta Size ' + resposta.length)
                     console.log('Consulta ' + consulta.value)
 
                     if (resposta.length > 0) {
-                        console.log('i - ' + JSON.stringify(resposta))
-                        //console.log('Consulta ' + resposta[i].elegibilityNbr)
                         document.getElementById('startHidden').style.display = "block"
-                        var p = document.createElement('p')
-                        p.innerHTML = JSON.stringify(resposta)
-                        document.getElementById('startHidden').appendChild(p)
+                        document.getElementById('startShowing').style.display = "none"
+
+                        document.getElementById('elegibilidade').value = resposta[0].elegibilityNbr
+                        document.getElementById('fe').value = resposta[0].CligestIdEpisode
+
+                        var tr = document.createElement('tr')
+                        var td = document.createElement('td')
+                        td.setAttribute("style", " font-weight: bold;")
+                        td.innerHTML = "Artigos Sem IVA"
+                        tr.appendChild(td)
+                        document.getElementById('tableBody').appendChild(tr)
+                        for (let i = 0; i < resposta.length; i++) {
+                            var elementType = 'tr'
+                            if (resposta[i].IVA != 14) {
+                                var tr = document.createElement('tr')
+                                var td = document.createElement('td')
+                                td.innerHTML = resposta[i].actDescription
+                                tr.appendChild(td)
+                                var td = document.createElement('td')
+                                td.innerHTML = resposta[i].AmtCoPay
+                                tr.appendChild(td)
+                                var td = document.createElement('td')
+                                td.innerHTML = resposta[i].TotalIva
+                                tr.appendChild(td)
+                                var td = document.createElement('td')
+                                td.innerHTML = resposta[i].quantity
+                                tr.appendChild(td)
+                                var td = document.createElement('td')
+                                td.innerHTML = resposta[i].price
+                                tr.appendChild(td)
+                                var td = document.createElement('td')
+                                td.innerHTML = resposta[i].quantity*resposta[i].price
+                                tr.appendChild(td)
+                                document.getElementById('tableBody').appendChild(tr)
+                            }
+
+                        }
+
+                        var tr = document.createElement('tr')
+                        var td = document.createElement('td')
+                        td.setAttribute("style", " font-weight: bold;")
+                        td.innerHTML = "Artigos Com IVA"
+
+                        tr.appendChild(td)
+                        document.getElementById('tableBody').appendChild(tr)
+                        for (let i = 0; i < resposta.length; i++) {
+                            var elementType = 'tr'
+                            if (resposta[i].IVA == 14) {
+                                var tr = document.createElement('tr')
+                                var td = document.createElement('td')
+                                td.innerHTML = resposta[i].actDescription
+                                tr.appendChild(td)
+                                var td = document.createElement('td')
+                                td.innerHTML =resposta[i].AmtCoPay
+                                tr.appendChild(td)
+                                var td = document.createElement('td')
+                                td.innerHTML = (resposta[i].price *resposta[i].quantity)*0.14
+                                tr.appendChild(td)
+                                var td = document.createElement('td')
+                                td.innerHTML = resposta[i].quantity
+                                tr.appendChild(td)
+                                var td = document.createElement('td')
+                                td.innerHTML = resposta[i].price
+                                tr.appendChild(td)
+                                var td = document.createElement('td')
+                                td.innerHTML = (resposta[i].quantity*resposta[i].price)  + ((resposta[i].price *resposta[i].quantity)*0.14)
+                                tr.appendChild(td)
+                                document.getElementById('tableBody').appendChild(tr)
+                            }
+
+                        }
                     } else {
-                        alert("Desculpa. Houve algum problema")
+                        alert("Desculpa. Ainda não recebemos resposta da Base de dados para a Elegibilidade que criou, por favor agurde.\nSe o problema persistir chame o Administrador")
                     }
                 }
             }
+        }
+
+        function adicionaElementos(parent, type, min, step, nameElement, classElement, valueElement, read) {
+            var tableBody = document.getElementById('tableBody')
+
+            var elementType = 'td'
+            var td = criaElemento(elementType)
+            var elementType = 'input'
+
+            var attributes = [{
+                    name: 'type',
+                    value: type
+                }, {
+                    name: 'min',
+                    value: min
+                }, {
+                    name: 'step',
+                    value: step
+                },
+                {
+                    name: 'name',
+                    value: nameElement
+                },
+                {
+                    name: 'class',
+                    value: classElement
+                },
+                {
+                    name: 'value',
+                    value: valueElement
+                }, {
+                    name: 'readonly',
+                    value: read
+                }, {
+                    name: 'form',
+                    value: 'formSbumit'
+                }
+            ]
+            if (type == "number" || type == "button") {
+                attributes.splice(6, 1)
+            }
+
+            if (type == "button") {
+                btnIndex++
+                attributes.push({
+                    name: 'onclick',
+                    value: "removerRow(this)"
+                })
+            }
+
+            var input = criaElemento(elementType, attributes)
+            td.appendChild(input)
+            parent.appendChild(td)
+
         }
     </script>
 </body>
