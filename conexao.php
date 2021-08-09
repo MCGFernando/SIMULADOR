@@ -1,16 +1,22 @@
 <?php
 class connection{
-    public static function conectaSqlServer(){
-        $server = '192.168.100.36';
-        $databaseName = 'cligestdoc';
-        $conn = new PDO("sqlsrv:Database = $databaseName;server = $server", "sa", "TESTDEV2021##!!", array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
+    public static function conectaSqlServer(){        
+        $serverName = "192.168.100.36";
+    		$databaseName = "cligestdoc";
+    		$uid = "SA";
+    		$pwd = "TESTDEV2021##!!";
+
+    		$conn = new PDO("sqlsrv:server = $serverName; Database = $databaseName;", $uid, $pwd);
         return $conn;
     }
 
-    public static function conectaSqlServerCligestsi(){
-        $server = '192.168.100.36';
-        $databaseName = 'cligestsi';
-        $conn = new PDO("sqlsrv:Database = $databaseName;server = $server", "sa", "TESTDEV2021##!!", array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
+    public static function conectaSqlServerCligestsi(){               
+        $serverName = "192.168.100.36";
+    		$databaseName = "cligestsi";
+    		$uid = "SA";
+    		$pwd = "TESTDEV2021##!!";
+
+    		$conn = new PDO("sqlsrv:server = $serverName; Database = $databaseName;", $uid, $pwd);
         return $conn;
     }
 }

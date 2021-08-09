@@ -20,5 +20,14 @@ class dao{
         $data = $stmt->fetchAll();
         return $data;
     }  
+
+    public static function pesquisaFichaEpisodioUtente($processo){
+        $c = connection::conectaSqlServerCligestsi();
+        $stmt = $c->prepare("SELECT f.[Default EXT], f.[Default Utente], f.[ID entidade], f.[Nº de Processo], f.[ID Ficha de Episódio], f.[Data de Entrada]
+         FROM FE f WHERE f.[Nº de Processo] = '".$processo."'");
+        $stmt->execute();
+        $data = $stmt->fetchAll();
+        return $data;
+    }
 }
 ?>

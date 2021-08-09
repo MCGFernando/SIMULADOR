@@ -18,7 +18,7 @@ try {
     $dbTimeStamp = $_POST['dbTimeStamp'];
     $qnt = $_POST['qnt'];
     $estadoCRUD = false;
-
+    $fes = dao::pesquisaFichaEpisodioUtente($processo);
     $conta = dao::pesquisaProdutoRequestPorTimestamp($dbTimeStamp);
     //echo $conta;
     if ($conta == 0) {
@@ -68,13 +68,29 @@ function determinaProcCode($tipo, $ivaCode)
 
 <body>
     <div class="container">
-        <?php if ($estadoCRUD) { //$estadoCRUD 
+        <?php if ($estadoCRUD ) { //$estadoCRUD 
         ?>
             <div id="startShowing">
                 <h4>Para finalizar, crie no <a href="https://cligest-ar-quality.azurewebsites.net/" target="blank" class="badge badge-primary">WS</a> uma Elegibilidade com as seguintes artigos:</h4><br><br>
+                <label for="">Utente.: </label><input type="text" name="" id="" class="form-control" value="<?php echo $fes[0]['Default Utente'] ?>" readonly>
                 <label for="">Ficha de Episódio.: </label><input type="text" name="" id="" class="form-control" value="<?php echo $processo ?>" readonly>
-                <label for=""><?php echo $tipoArtigo ?> Sem Iva.: </label><input type="text" name="" id="semIVA" class="form-control" value="<?php echo $semIVA ?>" readonly>
-                <label for=""><?php echo $tipoArtigo ?> Com Iva.: </label><input type="text" name="" id="comIVA" class="form-control" value="<?php echo $comIVA ?>" readonly>
+                <label for=""><?php echo $tipoArtigo ?> Sem Iva.: </label>
+                <div class="input-group mb-2">
+                    
+                    <input type="text" name="" id="semIVA" class="form-control form-control-lg" value="<?php echo number_format($semIVA, 2, '.', '') ?>" readonly>
+                    <div class="input-group-append">
+                        <button class="btn btn-success" onclick="javascript:copiaSemIVA()">Copiar</button>
+                    </div>
+                </div>
+                <label for=""><?php echo $tipoArtigo ?> Com Iva.: </label>
+                <div class="input-group mb-2">
+                    
+                    <input type="text" name="" id="comIVA" class="form-control  form-control-lg" value="<?php echo  number_format($comIVA, 2, '.', '') ?>" readonly>
+                    <div class="input-group-append">
+                        <button class="btn btn-success" onclick="javascript:copiaComIVA()">Copiar</button>
+                    </div>
+                </div>
+                <label for="">Data.: </label><input type="text" name="" id="" class="form-control" value="<?php echo $fes[0]['Data de Entrada'] ?>" readonly>
                 <input type="hidden" name="consulta" id="consulta" value="<?php echo $dbTimeStamp ?>" readonly>
                 <br><br>
                 <h4>Após criar a Elegibilidade, volte para esta página e pressione o Botão Finalizar </h4>
@@ -86,10 +102,12 @@ function determinaProcCode($tipo, $ivaCode)
             <div style="display: none;" id="startHidden" class="container">
                 <h2>Resumo da Simulação</h2>
                 <div class="card-body">
+                <label for="">Utente.: </label><input type="text" name="" id="" class="form-control" value="<?php echo $fes[0]['Default Utente'] ?>" readonly>
                     <label for="">Elegibilidade</label>
                     <input type="text" name="" id="elegibilidade" class="form-control" value="" readonly>
                     <label for="">Ficha de Episódio</label>
                     <input type="text" name="" id="fe" class="form-control" value="" readonly>
+                    <label for="">Data.: </label><input type="text" name="" id="" class="form-control" value="<?php echo $fes[0]['Data de Entrada'] ?>" readonly>
                     <br>
                     <table class="table">
                         <thead>
@@ -130,6 +148,7 @@ function determinaProcCode($tipo, $ivaCode)
             ajaxRequest.onreadystatechange = function() {
                 if (ajaxRequest.readyState == 4 && ajaxRequest.status == 200) {
                     //console.log('Consulta aqi ' + ajaxRequest.responseText)
+                    var total = 0
                     var resposta = JSON.parse(ajaxRequest.responseText)
                     console.log('Resposta ' + resposta)
                     console.log('Resposta Size ' + resposta.length)
@@ -156,19 +175,20 @@ function determinaProcCode($tipo, $ivaCode)
                                 td.innerHTML = resposta[i].actDescription
                                 tr.appendChild(td)
                                 var td = document.createElement('td')
-                                td.innerHTML = resposta[i].AmtCoPay
+                                td.innerHTML = Number(resposta[i].AmtCoPay).toFixed(2)
                                 tr.appendChild(td)
                                 var td = document.createElement('td')
-                                td.innerHTML = resposta[i].TotalIva
+                                td.innerHTML = Number(resposta[i].TotalIva).toFixed(2)
                                 tr.appendChild(td)
                                 var td = document.createElement('td')
-                                td.innerHTML = resposta[i].quantity
+                                td.innerHTML = Number(resposta[i].quantity).toFixed(2)
                                 tr.appendChild(td)
                                 var td = document.createElement('td')
-                                td.innerHTML = resposta[i].price
+                                td.innerHTML = Number(resposta[i].price).toFixed(2)
                                 tr.appendChild(td)
                                 var td = document.createElement('td')
-                                td.innerHTML = resposta[i].quantity*resposta[i].price
+                                td.innerHTML = Number((resposta[i].quantity*resposta[i].price)).toFixed(2)
+                                total += resposta[i].quantity*resposta[i].price
                                 tr.appendChild(td)
                                 document.getElementById('tableBody').appendChild(tr)
                             }
@@ -190,26 +210,44 @@ function determinaProcCode($tipo, $ivaCode)
                                 td.innerHTML = resposta[i].actDescription
                                 tr.appendChild(td)
                                 var td = document.createElement('td')
-                                td.innerHTML =resposta[i].AmtCoPay
+                                td.innerHTML = Number(resposta[i].AmtCoPay).toFixed(2)
                                 tr.appendChild(td)
                                 var td = document.createElement('td')
-                                td.innerHTML = (resposta[i].price *resposta[i].quantity)*0.14
+                                td.innerHTML = Number(((resposta[i].price *resposta[i].quantity)*0.14)).toFixed(2)
                                 tr.appendChild(td)
                                 var td = document.createElement('td')
-                                td.innerHTML = resposta[i].quantity
+                                td.innerHTML = Number(resposta[i].quantity).toFixed(2)
                                 tr.appendChild(td)
                                 var td = document.createElement('td')
-                                td.innerHTML = resposta[i].price
+                                td.innerHTML = Number(resposta[i].price).toFixed(2)
                                 tr.appendChild(td)
                                 var td = document.createElement('td')
-                                td.innerHTML = (resposta[i].quantity*resposta[i].price)  + ((resposta[i].price *resposta[i].quantity)*0.14)
+                                td.innerHTML = Number((resposta[i].quantity*resposta[i].price)  + ((resposta[ i].price *resposta[i].quantity)*0.14)).toFixed(2)
+                                total += (resposta[i].quantity*resposta[i].price)  + ((resposta[i].price *resposta[i].quantity)*0.14)
                                 tr.appendChild(td)
                                 document.getElementById('tableBody').appendChild(tr)
                             }
-
+                        
                         }
+                        var tr = document.createElement('tr')
+                        var td = document.createElement('td')
+                        tr.appendChild(td)
+                        var td = document.createElement('td')
+                        tr.appendChild(td)
+                        var td = document.createElement('td')
+                        tr.appendChild(td)
+                        var td = document.createElement('td')
+                        tr.appendChild(td)
+                        var td = document.createElement('td')
+                        td.setAttribute("style", " font-weight: bold;")
+                        td.innerHTML = "Total"
+                        tr.appendChild(td)
+                        var td = document.createElement('td')
+                        td.innerHTML = Number(total).toFixed(2)
+                        tr.appendChild(td)
+                        document.getElementById('tableBody').appendChild(tr)
                     } else {
-                        alert("Desculpa. Ainda não recebemos resposta da Base de dados para a Elegibilidade que criou, por favor agurde.\nSe o problema persistir chame o Administrador")
+                        alert("Desculpa. Ainda não recebemos resposta da Base de dados para a Elegibilidade que criou, por favor aguarde.\nSe o problema persistir chame o Administrador")
                     }
                 }
             }
@@ -267,6 +305,22 @@ function determinaProcCode($tipo, $ivaCode)
             td.appendChild(input)
             parent.appendChild(td)
 
+        }
+        function copiaSemIVA(){
+            event.preventDefault()
+            var copiaTexto = document.getElementById("semIVA")
+            copiaTexto.select()
+            copiaTexto.setSelectionRange(0, 99999)
+            document.execCommand("copy")
+            alert('copio')
+        }
+        function copiaComIVA(){
+            event.preventDefault()
+            var copiaTexto = document.getElementById("comIVA")
+            copiaTexto.select()
+            copiaTexto.setSelectionRange(0, 99999)
+            document.execCommand("copy")
+            alert('copio')
         }
     </script>
 </body>

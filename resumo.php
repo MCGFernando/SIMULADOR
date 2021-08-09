@@ -102,11 +102,17 @@ $dbTimeStamp = Time();
             <hr>
             
 
-            Total de Artigos Sem Iva.: <input type="text" name="semIVA" id="semIVA" class="form-control" value="<?php echo $totalSemIva ?>" readonly>
-            Total de Artigos Com Iva.: <input type="text" name="comIVA" id="comIVA" class="form-control" value="<?php echo $totalComIva ?>" readonly>
+            
+                <label>Total de Artigos Sem Iva.: </label>
+                <input type="text" name="semIVA" id="semIVA" class="form-control form-control-lg" value="<?php echo $totalSemIva ?>" readonly>
+            
+                <label>Total de Artigos Com Iva.: </label>
+                <input type="text" name="comIVA" id="comIVA" class="form-control form-control-lg" value="<?php echo $totalComIva ?>" readonly>
+            
             <!--<br>
             Total da Elegibilidade.: <input type="text" name="" id="totalelegibilidade" class="form-control" value="<?php //echo ($totalComIva + $totalSemIva) ?>" readonly>-->
             <hr>
+            
             <input type="hidden" name="dbTimeStamp" value="<?php echo  $dbTimeStamp?>">
             <input type="submit" name="" id="btnSubmit" class="btn btn-primary" value="Simular" disabled>
             <button class="btn btn-danger" name="" id="recalcular">Recalcular Simulação</button>
@@ -158,6 +164,7 @@ $dbTimeStamp = Time();
             console.log('Com IVA: ' + totalComIva)
             console.log('Sem IVA: ' + totalSemIva)
         })
+        
     </script>
 </body>
 
