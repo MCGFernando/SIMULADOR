@@ -19,5 +19,7 @@ class connection{
     		$conn = new PDO("sqlsrv:server = $serverName; Database = $databaseName;", $uid, $pwd);
         return $conn;
     }
+
+    
 }
 ?>

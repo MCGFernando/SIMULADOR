@@ -33,8 +33,8 @@
    
     <div class="container table" >
         <form action="resumo.php" method="post" id="formSbumit">
-            <input type="submit" id="btnSubmit" value="Simular" class="btn btn-primary" disabled> 
-        </form>
+            <input type="submit" id="btnSubmit" value="Simular" class="btn btn-primary float-right" disabled> 
+        </form>resumo.php
         <table class="table" id="table">
             <thead>
                 <tr>
@@ -51,9 +51,7 @@
 
             </tbody>
         </table>
-        <form action="" method="post">
-            <input type="submit" value="Simular" class="btn btn-primary" disabled>
-        </form>
+        
     </div>
 
     <script>
@@ -66,26 +64,21 @@
             var copia = noPrincipal.cloneNode(true)
             document.getElementById('container').appendChild(copia)
         } */
-        function adicionaArtigo(){
-            /* tableRow = '<tr>'
-            tableRow += '<td><input type="text" name="idArtigo[]" id="idArtigo" class="form-control" value="REPLACE_VALUE" readonly></td>'
-            tableRow += '<td><input type="text" name="artigo[]" id="artigo" class="form-control" value="REPLACE_VALUE" readonly></td>'
-            tableRow += '<td><input type="text" name="valorArtigo[]" id="valorArtigo" class="form-control" value="REPLACE_VALUE" readonly></td>'
-            tableRow += '<td><input type="text" name="REPLACE_NAME[]" id="REPLACE_ID" class="form-control" value="REPLACE_VALUE" readonly></td>'
-            tableRow += '<td><button class="btn btn-danger" name="remover[]" >Remover</button></td>'
-            tableRow +='</tr>' */
-            
+        function adicionaArtigo(){          
             var consulta = document.getElementById('consulta')
             var tableBody = document.getElementById('tableBody')
             console.log(consulta)
             if(consulta.value ==''){
                 alert('Você pecisa fazer uma consulta antes de adicionar uma artigo')
             }else{
-                document.getElementById('btnSubmit').disabled = false
+                
                 var form_data = new FormData()
+                var ajaxRequest = new XMLHttpRequest()
+
+                document.getElementById('btnSubmit').disabled = false
+
                 form_data.append('consulta', consulta.value)
 
-                var ajaxRequest = new XMLHttpRequest()
                 ajaxRequest.open('POST', 'findByArtigo.php')
                 ajaxRequest.send(form_data)
                 ajaxRequest.onreadystatechange = function () {
@@ -98,22 +91,21 @@
                         
                         if (resposta.length > 0) {
                             console.log('i - ' + JSON.stringify(resposta))
+                            
                             var elementType = 'tr'
                             var tr = criaElemento(elementType)
-                            adicionaElementos(tr, "text", "", "","idArtigo[]","form-control", resposta[0].IdActo, "true")
+                            
+                            adicionaElementos(tr, "number", 1, 1, "idArtigo[]","form-control", resposta[0].IdActo, "true")
                             adicionaElementos(tr, "text", "", "","artigo[]","form-control" , resposta[0].Acto, "true")
                             adicionaElementos(tr, "number", 1, 1, "qnt[]","form-control", 1, "false")
-                            adicionaElementos(tr, "text", "", "","iva[]","form-control", resposta[0].IVA , "true")
-                            adicionaElementos(tr, "text", "", "","precoArtigo[]","form-control", resposta[0].valorArtigo , "true")
-                            adicionaElementos(tr, "text", "", "","valorComArtigo[]","form-control", resposta[0].valorComArtigo, "true")
+                            adicionaElementos(tr, "number", "", 0.01,"iva[]","form-control", resposta[0].IVA , "true")
+                            adicionaElementos(tr, "number", "", 0.01,"precoArtigo[]","form-control", resposta[0].valorArtigo , "true")
+                            adicionaElementos(tr, "number", "", 0.01,"valorComArtigo[]","form-control", resposta[0].valorComArtigo, "true")
                             adicionaElementos(tr, "button", "", "","remover[]","btn btn-danger","Remover", "true")
-                            //adicionaElementos(tr,"","")
+                            
                             tableBody.appendChild(tr)
+                            
                             document.getElementById('consulta').value = ''
-                            /* tableBody.innerHTML += tableRow
-                            document.getElementsByName('idArtigo')[indice].value = resposta[0].IdActo
-                            document.getElementsByName('artigo')[indice].value = resposta[0].Acto
-                            document.getElementsByName('valorArtigo')[indice].value = resposta[0].PU  */
                             indice++
                         } else {
                             alert("Desculpa. Houve algum problema")
@@ -222,6 +214,23 @@
                     value:"removerRow(this)"
                 })
             }
+
+            if(type=="number"){
+                btnIndex++
+                attributes.push({
+                    name:'style',
+                    value:"width: 100px; text-align: right"
+                }
+                )
+            }
+
+            if(type=="text"){
+                btnIndex++
+                attributes.push({
+                    name:'style',
+                    value:"width: 400px"
+                })
+            }
             
             var input = criaElemento(elementType, attributes)
             td.appendChild(input)
@@ -242,23 +251,11 @@
             var i = indiceBotao.parentNode.parentNode.rowIndex;
             document.getElementById("table").deleteRow(i);
 
-
-           /*  indiceTable = table.rows.length
-            var btn = document.getElementsByName(['remover[]'])
-            console.log('clicou no botao ' + indiceBotao)
-            console.log('linha ' + indiceTable)
-            table.deleteRow(indiceBotao) */
             if(table.rows.length==1){
                 document.getElementById('btnSubmit').disabled = true
             }
         }
-        /* var btn = document.getElementsByName('remover[]')
-        console.log('botao len ' + btn.length)
-        for (let i =0; i<btn.length; i++){
-            btn[i].onclick = function(){
-                console.log('Clicou no botao ' + i)
-            }
-        } */
+        
     </script>
 </body>
 

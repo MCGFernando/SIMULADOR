@@ -2,5 +2,5 @@
 require_once "conexao.php";
 require_once "dao.php";
 
-echo "Teste 1";
+echo "Teste 2";
 ?>

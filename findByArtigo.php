@@ -14,8 +14,8 @@ require_once "conexao.php";
                 'IdActo' => str_ireplace($condicao, $replace_string, $row["ID Produto"]),
                 'Acto' => str_ireplace($condicao, $replace_string, $row["Produto"]),
                 'IVA' => str_ireplace($condicao, $replace_string, $row["IVA"]),
-                'valorArtigo' => str_ireplace($condicao, $replace_string, $row["valorArtigo"]),
-                'valorComArtigo' => $row["IVA"]==14 ? ($row["valorArtigo"] + ($row["valorArtigo"]*0.14)): $row["valorArtigo"]
+                'valorArtigo' => round($row["valorArtigo"],2),
+                'valorComArtigo' => $row["IVA"]==14 ? round(($row["valorArtigo"] + ($row["valorArtigo"]*0.14)),2) : round($row["valorArtigo"],2)
             );
         }
         echo json_encode($dados);
