@@ -4,7 +4,7 @@ class connection{
         $serverName = "192.168.100.36";
     		$databaseName = "cligestdoc";
     		$uid = "SA";
-    		$pwd = "TESTDEV2021##!!";
+    		$pwd = "Cligest2021!!##";
 
     		$conn = new PDO("sqlsrv:server = $serverName; Database = $databaseName;", $uid, $pwd);
         return $conn;
@@ -14,22 +14,10 @@ class connection{
         $serverName = "192.168.100.36";
     		$databaseName = "cligestsi";
     		$uid = "SA";
-    		$pwd = "TESTDEV2021##!!";
+    		$pwd = "Cligest2021!!##";
 
     		$conn = new PDO("sqlsrv:server = $serverName; Database = $databaseName;", $uid, $pwd);
         return $conn;
     }
-
-    public static function conectaSqlServerCligestMain(){               
-      $serverName = "192.168.100.36";
-      $databaseName = "cligestmain";
-      $uid = "SA";
-      $pwd = "TESTDEV2021##!!";
-
-      $conn = new PDO("sqlsrv:server = $serverName; Database = $databaseName;", $uid, $pwd);
-      return $conn;
-  }
-
-    
 }
 ?>

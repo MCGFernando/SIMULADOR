@@ -13,7 +13,7 @@ require_once "conexao.php";
         ,Q.[elegibilityNbr]    ,Q.[AmtCoPay]    ,Q.[AmtPaid]    ,Q.[TotalIva]    ,Q.[date_request]";
         $result = $c->query($sql);
         $replace_string = $condicao;
-        
+        //var_dump($result);
         foreach($result as $row){
             $dados[] = array(
                 'actDescription' => str_ireplace($condicao, $replace_string, $row["actDescription"]),

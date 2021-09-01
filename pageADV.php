@@ -67,6 +67,7 @@ function determinaProcCode($tipo, $ivaCode)
 </head>
 
 <body>
+<?php include('navbar.html');?>
     <div class="container">
         <?php if ($estadoCRUD ) { //$estadoCRUD 
         ?>
@@ -130,13 +131,13 @@ function determinaProcCode($tipo, $ivaCode)
                     </table>
 
                     <hr>
-                    <a href="index.html" class="btn btn-primary">Fazer Nova Simulação</a>
+                    <a href="home.html" class="btn btn-primary">Fazer Nova Simulação</a>
                 </div>
             </div>
 
         <?php } else { ?>
             <h2>Por alguma razão não foi possível concluir a simulação. Por favor chame o Administrador</h2>
-            <a href="index.html" class="btn btn-primary">Voltar a página inicial</a>
+            <a href="home.html" class="btn btn-primary">Voltar a página inicial</a>
         <?php } ?>
     </div>
 
@@ -151,7 +152,7 @@ function determinaProcCode($tipo, $ivaCode)
             ajaxRequest.send(form_data)
             ajaxRequest.onreadystatechange = function() {
                 if (ajaxRequest.readyState == 4 && ajaxRequest.status == 200) {
-                    //console.log('Consulta aqi ' + ajaxRequest.responseText)
+                    console.log('Consulta aqi ' + ajaxRequest.responseText)
                     var total = 0
                     var resposta = JSON.parse(ajaxRequest.responseText)
                     console.log('Resposta ' + resposta)

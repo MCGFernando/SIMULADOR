@@ -15,6 +15,7 @@ require_once "dao.php";
 $fes = dao::pesquisaFichaEpisodio();
 $len = count($_POST['artigo']);
 $id = $_POST['idArtigo'];
+
 $artigo = $_POST['artigo'];
 $qnt = $_POST['qnt'];
 $iva = $_POST['iva'];
@@ -40,21 +41,9 @@ $dbTimeStamp = Time();
 </head>
 
 <body>
+    <?php include('navbar.html');?>
     <div class="container">
         <h2 class="text-center mt-4 mb-4">Simulador de Elegibilidades Clínicas</h2>
-        <!--<div class="row mt-5 mb-5" id="no-principal">
-            <div class="col col-sm-2">&nbsp;</div>
-            <div class="col col-sm-8">
-                <div class="input-group mb-3">
-                    <input type="text" name="consulta" id="consulta" class="form-control form-control-lg"
-                        placeholder="Digite o [ID Utente] ou [Nome do Utente] ou [Nº do ECV]" onkeyup="javascript:carregaDados(this.value)">
-                </div>
-                <span id="resultado"></span>
-            </div>
-        </div>
-        <hr>-->
-        insercaoController
-        
         <form action="pagesController.php" method="post">
             <table class="table">
                 <thead>
@@ -119,13 +108,14 @@ $dbTimeStamp = Time();
             
             <hr>
             <label>ID Utente.: </label>
-            <input type="text" name="" id="idUtente" class="form-control form-control-lg" value="" readonly>
+            <input type="text" name="idUtente" id="idUtente" class="form-control form-control-lg" value="" readonly>
 
             <label>Utente.: </label>
-            <input type="text" name="" id="utente" class="form-control form-control-lg" value="" readonly>
+            <input type="text" name="utente" id="utente" class="form-control form-control-lg" value="" readonly>
 
             
             <input type="hidden" name="idEntidade" id="idEntidade" value="" readonly>
+            <input type="hidden" name="idfe" id="idfe" value="" readonly>
 
             <label>Total de Artigos Sem Iva.: </label>
             <input type="text" name="semIVA" id="semIVA" style="width: 200px; text-align: right;" class="form-control form-control-lg" value="<?php echo $totalSemIva ?>" readonly>
@@ -216,6 +206,7 @@ $dbTimeStamp = Time();
                             var utente = document.getElementById('utente')
                             var entidade = document.getElementById('entidade')
                             var idEntidade = document.getElementById('idEntidade')
+                            var idFE = document.getElementById('idfe')
                             var startHidden = document.getElementById('startHidden')
                             var startHiddenOthers = document.getElementById('startHiddenOthers')
 
@@ -225,6 +216,7 @@ $dbTimeStamp = Time();
                             utente.value = resposta[0].utente
                             idEntidade.value = resposta[0].idEntidade
                             
+                            idEntidade.value = resposta[0].idFE
 
                             console.log('Id Entidsade ' + resposta[0].idEntidade)
                             if (resposta[0].idEntidade == 416 || resposta[0].idEntidade == 415) {
